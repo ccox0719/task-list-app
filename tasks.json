@@ -1,0 +1,67 @@
+{
+  "tasks": {
+    "daily": [
+      "Bible Time",
+      "Homework",
+      "Show mom planner",
+      "Show mom completed homework",
+      "Empty dishwasher",
+      "Load dishwasher",
+      "Help with dinner",
+      "Clean up after dinner",
+      "General pickup",
+      "Living Room",
+      "Bedroom",
+      "Evening routine",
+      "Shower",
+      "Brush teeth"
+    ],
+    "weekdays": [
+      {
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "tasks": [
+          "Get Home Routine",
+          "Backpacks"
+        ]
+      }
+    ],
+    "weekend": [
+      {
+        "days": ["Friday", "Saturday"],
+        "tasks": [
+          "Bathrooms",
+          "Toilet",
+          "Sink",
+          "Mirror",
+          "Floor",
+          "Tub",
+          "Fold Laundry"
+        ]
+      }
+    ],
+    "specific": [
+      {
+        "days": ["Sunday", "Thursday"],
+        "tasks": [
+          "Make Lunches",
+          "Veggie",
+          "Fruit",
+          "Cheese Stick",
+          "Yogurt Tube",
+          "Chips",
+          "Dessert",
+          "Main Meal"
+        ]
+      },
+      {
+        "days": ["Tuesday", "Thursday"],
+        "tasks": [
+          "Music Practice",
+          "Kyden-Trumpet",
+          "Jaden-Saxophone",
+          "Elsie-Piano"
+        ]
+      }
+    ]
+  }
+}
