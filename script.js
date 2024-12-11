@@ -1,111 +1,72 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const dateDisplay = document.getElementById("date-display");
     const taskList = document.getElementById("task-list");
-    const progressBar = document.getElementById("progress-bar");
-    const progressPercentage = document.getElementById("progress-percentage");
-    const streakCounter = document.getElementById("streak-counter");
+    const streakContainer = document.querySelector(".streak-container");
+    const appContainer = document.querySelector(".app-container");
+    const tasksCompleted = {}; // Object to track completed days
 
-    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    let tasks = [];
-    let streak = 0;
+    // Example tasks (replace this with dynamic tasks from JSON if needed)
+    const tasks = [
+        "Task 1",
+        "Task 2",
+        "Task 3",
+        "Task 4"
+    ];
 
-    // Fetch tasks from JSON
-    const loadTasksFromJSON = async () => {
-        try {
-            const response = await fetch("tasks.json");
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const data = await response.json();
-            console.log("Fetched Data:", data); // Debugging
-            tasks = data;
-            loadTasksForToday();
-        } catch (error) {
-            console.error("Error loading tasks:", error);
-        }
-    };
-
-    // Get tasks for the current day
-    const getTasksForDay = (day) => {
-        console.log("Current Day:", day); // Debugging
-        const dailyTasks = tasks.tasks.daily || [];
-        const weekdayTasks = tasks.tasks.weekdays.find((group) =>
-            group.days.includes(day)
-        )?.tasks || [];
-        const weekendTasks = tasks.tasks.weekend.find((group) =>
-            group.days.includes(day)
-        )?.tasks || [];
-        const specificTasks = tasks.tasks.specific.reduce((acc, group) => {
-            if (group.days.includes(day)) {
-                acc.push(...group.tasks);
-            }
-            return acc;
-        }, []);
-        console.log("Tasks for Day:", [...dailyTasks, ...weekdayTasks, ...weekendTasks, ...specificTasks]); // Debugging
-        return [...dailyTasks, ...weekdayTasks, ...weekendTasks, ...specificTasks];
-    };
-
-    // Load tasks for the current day
-    const loadTasksForToday = () => {
-        const today = new Date();
-        const currentDay = daysOfWeek[today.getDay()];
-        dateDisplay.textContent = today.toDateString();
-        const todayTasks = getTasksForDay(currentDay);
-        displayTasks(todayTasks);
-    };
-
-    // Display tasks with checkboxes
-    const displayTasks = (tasks) => {
-        console.log("Displaying Tasks:", tasks); // Debugging
-        taskList.innerHTML = ""; // Clear existing tasks
-
+    // Display tasks in the task list
+    function displayTasks() {
+        taskList.innerHTML = ""; // Clear the current tasks
         tasks.forEach((task, index) => {
             const listItem = document.createElement("li");
-
-            // Create a checkbox
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = `task-${index}`;
-            checkbox.addEventListener("change", () => toggleTask(checkbox, listItem));
-
-            // Create a label for the task
-            const label = document.createElement("label");
-            label.htmlFor = `task-${index}`;
-            label.textContent = task;
-
-            // Append checkbox and label to the list item
-            listItem.appendChild(checkbox);
-            listItem.appendChild(label);
-
+            listItem.textContent = task;
+            listItem.className = "task-item";
+            listItem.dataset.index = index;
+            listItem.addEventListener("click", () => toggleTask(listItem));
             taskList.appendChild(listItem);
         });
-
-        updateProgress();
-    };
+    }
 
     // Toggle task completion
-    const toggleTask = (checkbox, listItem) => {
-        if (checkbox.checked) {
-            listItem.classList.add("completed");
-        } else {
-            listItem.classList.remove("completed");
+    function toggleTask(listItem) {
+        listItem.classList.toggle("completed");
+        checkAllTasksCompleted();
+    }
+
+    // Check if all tasks are completed
+    function checkAllTasksCompleted() {
+        const allTasks = document.querySelectorAll(".task-item");
+        const allCompleted = Array.from(allTasks).every(task => task.classList.contains("completed"));
+        if (allCompleted) {
+            showWellDoneScreen();
+            saveDayCompletion();
         }
-        updateProgress();
-    };
+    }
 
-    // Update progress bar
-    const updateProgress = () => {
-        const totalTasks = taskList.children.length;
-        const completedTasks = document.querySelectorAll(".completed").length;
-        const percentage = Math.round((completedTasks / totalTasks) * 100);
-        progressBar.value = percentage;
-        progressPercentage.textContent = `${percentage}% Completed`;
+    // Show "Well Done" screen
+    function showWellDoneScreen() {
+        appContainer.innerHTML = `
+            <div class="well-done">
+                <h1>Well Done!</h1>
+                <p>You completed all your tasks for today!</p>
+            </div>
+        `;
+    }
 
-        // Update streak if all tasks are completed
-        if (completedTasks === totalTasks && totalTasks > 0) {
-            streak++;
-            streakCounter.textContent = streak;
+    // Save day completion to localStorage
+    function saveDayCompletion() {
+        const today = new Date().toISOString().split("T")[0]; // Format YYYY-MM-DD
+        tasksCompleted[today] = true;
+        localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
+    }
+
+    // Load completed days from localStorage
+    function loadCompletedDays() {
+        const savedData = localStorage.getItem("tasksCompleted");
+        if (savedData) {
+            Object.assign(tasksCompleted, JSON.parse(savedData));
         }
-    };
+    }
 
-    // Load tasks on page load
-    loadTasksFromJSON();
+    // Initial load
+    loadCompletedDays();
+    displayTasks();
 });
