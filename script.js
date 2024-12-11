@@ -1,15 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
     const taskList = document.getElementById("task-list");
-    const streakContainer = document.querySelector(".streak-container");
     const appContainer = document.querySelector(".app-container");
     const tasksCompleted = {}; // Object to track completed days
 
-    // Example tasks (replace this with dynamic tasks from JSON if needed)
+    // Define your tasks (replace with dynamic JSON fetching if needed)
     const tasks = [
-        "Task 1",
-        "Task 2",
-        "Task 3",
-        "Task 4"
+        "Make your bed",
+        "Brush your teeth",
+        "Read for 15 minutes",
+        "Help with chores"
     ];
 
     // Display tasks in the task list
@@ -20,6 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
             listItem.textContent = task;
             listItem.className = "task-item";
             listItem.dataset.index = index;
+
+            // Restore completed state from localStorage
+            const today = new Date().toISOString().split("T")[0];
+            const savedData = JSON.parse(localStorage.getItem(today)) || {};
+            if (savedData[index]) {
+                listItem.classList.add("completed");
+            }
+
             listItem.addEventListener("click", () => toggleTask(listItem));
             taskList.appendChild(listItem);
         });
@@ -28,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Toggle task completion
     function toggleTask(listItem) {
         listItem.classList.toggle("completed");
+        saveTaskCompletion();
         checkAllTasksCompleted();
     }
 
@@ -51,22 +59,24 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
     }
 
-    // Save day completion to localStorage
+    // Save task completion status for the day
+    function saveTaskCompletion() {
+        const today = new Date().toISOString().split("T")[0];
+        const completedTasks = {};
+        const taskItems = document.querySelectorAll(".task-item");
+        taskItems.forEach((task, index) => {
+            completedTasks[index] = task.classList.contains("completed");
+        });
+        localStorage.setItem(today, JSON.stringify(completedTasks));
+    }
+
+    // Save day completion to track progress
     function saveDayCompletion() {
-        const today = new Date().toISOString().split("T")[0]; // Format YYYY-MM-DD
+        const today = new Date().toISOString().split("T")[0];
         tasksCompleted[today] = true;
         localStorage.setItem("tasksCompleted", JSON.stringify(tasksCompleted));
     }
 
-    // Load completed days from localStorage
-    function loadCompletedDays() {
-        const savedData = localStorage.getItem("tasksCompleted");
-        if (savedData) {
-            Object.assign(tasksCompleted, JSON.parse(savedData));
-        }
-    }
-
     // Initial load
-    loadCompletedDays();
     displayTasks();
 });
