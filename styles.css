@@ -49,7 +49,7 @@ body {
 }
 
 #task-list {
-    list-style-type: none; /* Removes bullet points */
+    list-style-type: none;
     padding: 0;
     margin: 0;
 }
@@ -67,6 +67,10 @@ body {
     transition: transform 0.2s, background 0.2s;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+}
+
+#task-list li.completed {
+    background: linear-gradient(135deg, #66a6ff, #4caf50);
 }
 
 #task-list li:hover {
