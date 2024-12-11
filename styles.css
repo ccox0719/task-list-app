@@ -2,7 +2,7 @@ body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
     background-color: #333;
-    color: #fff;
+    color: #333333;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -102,34 +102,15 @@ progress::-webkit-progress-value {
 #progress-percentage {
     margin-top: 10px;
     font-size: 18px;
-    color: #fff;
+    color: #333333;
     font-weight: bold;
 }
 
 .streak-container {
     margin-bottom: 20px;
     font-size: 18px;
-    color: #fff;
+    color: #333333;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.button-container button {
-    background: linear-gradient(135deg, #fad0c4, #fbc2eb);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 25px;
-    cursor: pointer;
-    margin: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    transition: background 0.3s, transform 0.2s;
-}
-
-.button-container button:hover {
-    background: linear-gradient(135deg, #fbc2eb, #fad0c4);
-    transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 footer {
