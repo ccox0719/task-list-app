@@ -95,31 +95,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Display tasks with checkboxes
     const displayTasks = (tasks) => {
-        taskList.innerHTML = ""; // Clear existing tasks
+    taskList.innerHTML = ""; // Clear existing tasks
 
-        tasks.forEach((task, index) => {
-            const listItem = document.createElement("li");
+    tasks.forEach((task, index) => {
+        const listItem = document.createElement("li");
 
-            // Create a checkbox
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = `task-${index}`;
-            checkbox.addEventListener("change", () => toggleTask(checkbox, listItem));
+        // Create a checkbox
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `task-${index}`;
+        checkbox.addEventListener("change", () => toggleTask(checkbox, listItem));
 
-            // Create a label for the task
-            const label = document.createElement("label");
-            label.htmlFor = `task-${index}`;
-            label.textContent = task;
+        // Create a label for the task
+        const label = document.createElement("label");
+        label.htmlFor = `task-${index}`; // Ensures clicking the label toggles the checkbox
+        label.textContent = task;
 
-            // Append checkbox and label to the list item
-            listItem.appendChild(checkbox);
-            listItem.appendChild(label);
+        // Append checkbox and label to the list item
+        listItem.appendChild(checkbox);
+        listItem.appendChild(label);
 
-            taskList.appendChild(listItem);
-        });
+        // Add the list item to the task list
+        taskList.appendChild(listItem);
+    });
 
-        updateProgress();
-    };
+    updateProgress();
+};
+
 
     // Navigate to previous day
     const goToPreviousDay = () => {
