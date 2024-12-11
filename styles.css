@@ -2,7 +2,7 @@ body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
     background-color: #333;
-    color: #333333;
+    color: beige;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,7 +43,7 @@ body {
 
 #date-display {
     font-size: 16px;
-    color: #fad0c4;
+    color: beige;
 }
 
 #task-list-container {
@@ -54,6 +54,7 @@ body {
     list-style-type: none;
     padding: 0;
     margin: 0;
+    color: #333333;
 }
 
 #task-list li {
@@ -64,7 +65,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: #333333;
     font-weight: bold;
     transition: transform 0.2s, background 0.2s;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -102,19 +103,19 @@ progress::-webkit-progress-value {
 #progress-percentage {
     margin-top: 10px;
     font-size: 18px;
-    color: #333333;
+    color: beige;
     font-weight: bold;
 }
 
 .streak-container {
     margin-bottom: 20px;
     font-size: 18px;
-    color: #333333;
+    color: beige;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 footer {
     margin-top: 20px;
     font-size: 14px;
-    color: #fad0c4;
+    color: beige;
 }
