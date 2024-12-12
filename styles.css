@@ -39,14 +39,14 @@ body {
 
 #task-list li {
     padding: 15px;
-    margin-bottom: 10px;
-    background-color: #2b9d8f;
+    margin: 10px 40px; /* Add space on each side */
+    background-color: #31d1bc;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #cccccc;
+    color: #333333;
     text-align: center;
     font-size: 18px;
     font-weight: bold;
@@ -54,12 +54,12 @@ body {
 }
 
 #task-list li:hover {
-    background-color: #1e8577;
+    background-color: #38efd7;
     color: #ffffff;
 }
 
 #task-list li.completed {
-    background-color: #006f5f;
+    background-color: #008b78;
     color: #ffffff;
 }
 
@@ -73,12 +73,12 @@ progress {
 }
 
 progress::-webkit-progress-bar {
-    background-color: #2a9d8f;
+    background-color: #39fde3;
     border-radius: 10px;
 }
 
 progress::-webkit-progress-value {
-    background-color: #006f5f;
+    background-color: #008b78;
     border-radius: 10px;
 }
 
