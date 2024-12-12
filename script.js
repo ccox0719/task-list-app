@@ -25,7 +25,18 @@ const getTasksForDate = (date) => {
     const allTasks = [...dailyTasks, ...weekdayTasks, ...weekendTasks, ...specificTasks];
     return sortTasksByPriority(allTasks);
 };
-
+const loadTasksFromJSON = async () => {
+    try {
+        const response = await fetch("tasks.json");
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        console.log("Fetched Tasks JSON:", data); // Debugging
+        tasks = data;
+        loadTasksForDate(currentDate);
+    } catch (error) {
+        console.error("Error loading tasks:", error);
+    }
+};
 // Display tasks
 const displayTasks = (tasks) => {
     taskList.innerHTML = ""; // Clear existing tasks
