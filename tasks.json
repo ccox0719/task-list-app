@@ -1,27 +1,28 @@
 {
   "tasks": {
     "daily": [
-      "Bible Time",
-      "Homework",
-      "Show mom planner",
-      "Show mom completed homework",
-      "Empty dishwasher",
-      "Load dishwasher",
-      "Help with dinner",
-      "Clean up after dinner",
-      "General pickup",
-      "Living Room",
-      "Bedroom",
-      "Evening routine",
-      "Shower",
-      "Brush teeth"
+      { "task": "Bible Time", "priority": 1 },
+      { "task": "Homework", "priority": 5 },
+      { "task": "Show mom planner", "priority": 5 },
+      { "task": "Show mom completed homework", "priority": 5 },
+      { "task": "Empty dishwasher", "priority": 4 },
+      { "task": "Load dishwasher", "priority": 4 },
+      { "task": "Help with dinner", "priority": 7 },
+      { "task": "Clean up after dinner", "priority": 8 },
+      { "task": "General pickup", "priority": 9 },
+      { "task": "Living Room", "priority": 9 },
+      { "task": "Bedroom", "priority": 9 },
+      { "task": "Evening routine", "priority": 10 },
+      { "task": "Shower", "priority": 10 },
+      { "task": "Brush teeth", "priority": 10 }
     ],
     "weekdays": [
       {
         "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
         "tasks": [
-          "Get Home Routine",
-          "Backpacks"
+          { "task": "Get Home Routine", "priority": 2 },
+          { "task": "Backpacks", "priority": 2 },
+          { "task": "Lunch Boxes", "priority": 2 }
         ]
       }
     ],
@@ -29,13 +30,13 @@
       {
         "days": ["Friday", "Saturday"],
         "tasks": [
-          "Bathrooms",
-          "Toilet",
-          "Sink",
-          "Mirror",
-          "Floor",
-          "Tub",
-          "Fold Laundry"
+          { "task": "Bathrooms", "priority": 11 },
+          { "task": "Toilet", "priority": 11 },
+          { "task": "Sink", "priority": 11 },
+          { "task": "Mirror", "priority": 11 },
+          { "task": "Floor", "priority": 11 },
+          { "task": "Tub", "priority": 11 },
+          { "task": "Fold Laundry", "priority": 11 }
         ]
       }
     ],
@@ -43,23 +44,23 @@
       {
         "days": ["Sunday", "Thursday"],
         "tasks": [
-          "Make Lunches",
-          "Veggie",
-          "Fruit",
-          "Cheese Stick",
-          "Yogurt Tube",
-          "Chips",
-          "Dessert",
-          "Main Meal"
+          { "task": "Make Lunches", "priority": 3 },
+          { "task": "Veggie", "priority": 3 },
+          { "task": "Fruit", "priority": 3 },
+          { "task": "Cheese Stick", "priority": 3 },
+          { "task": "Yogurt Tube", "priority": 3 },
+          { "task": "Chips", "priority": 3 },
+          { "task": "Dessert", "priority": 3 },
+          { "task": "Main Meal", "priority": 3 }
         ]
       },
       {
         "days": ["Tuesday", "Thursday"],
         "tasks": [
-          "Music Practice",
-          "Kyden-Trumpet",
-          "Jaden-Saxophone",
-          "Elsie-Piano"
+          { "task": "Music Practice", "priority": 6 },
+          { "task": "Kyden-Trumpet", "priority": 6 },
+          { "task": "Jaden-Saxophone", "priority": 6 },
+          { "task": "Elsie-Piano", "priority": 6 }
         ]
       }
     ]
