@@ -1,8 +1,8 @@
 body {
     margin: 0;
     font-family: 'Playfair Display', serif;
-    background-color: #000000;
-    color: #333333;
+    background-color: #1a1a1a;
+    color: #cccccc;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -14,7 +14,7 @@ body {
     width: 90%;
     max-width: 600px;
     text-align: center;
-    background-color: #333333;
+    background-color: #292929;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -40,13 +40,13 @@ body {
 #task-list li {
     padding: 15px;
     margin-bottom: 10px;
-    background-color: #31d1bc;
+    background-color: #2b9d8f;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #333333;
+    color: #cccccc;
     text-align: center;
     font-size: 18px;
     font-weight: bold;
@@ -54,12 +54,12 @@ body {
 }
 
 #task-list li:hover {
-    background-color: #38efd7;
+    background-color: #1e8577;
     color: #ffffff;
 }
 
 #task-list li.completed {
-    background-color: #008b78;
+    background-color: #006f5f;
     color: #ffffff;
 }
 
@@ -69,26 +69,27 @@ progress {
     border-radius: 10px;
     appearance: none;
     -webkit-appearance: none;
+    margin-bottom: 20px; /* Move progress bar to the top */
 }
 
 progress::-webkit-progress-bar {
-    background-color: #39fde3;
+    background-color: #2a9d8f;
     border-radius: 10px;
 }
 
 progress::-webkit-progress-value {
-    background-color: #008b78;
+    background-color: #006f5f;
     border-radius: 10px;
 }
 
 .streak-container {
     margin-bottom: 20px;
     font-size: 16px;
-    color: #38efd7;
+    color: #cccccc;
 }
 
 footer {
     margin-top: 20px;
     font-size: 14px;
-    color: #38efd7;
+    color: #cccccc;
 }
