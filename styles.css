@@ -39,7 +39,7 @@ body {
 
 #task-list li {
     padding: 15px;
-    margin: 10px 100px; /* Add space on each side */
+    margin: 10px 40px; /* Add space on each side */
     background-color: #31d1bc;
     border-radius: 5px;
     display: flex;
