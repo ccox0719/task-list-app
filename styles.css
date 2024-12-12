@@ -1,117 +1,146 @@
-body {
-    margin: 0;
-    font-family: 'Playfair Display', serif;
-    background-color: #000000;
-    color: #38efd7;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const dateDisplay = document.getElementById("date-display");
+    const taskList = document.getElementById("task-list");
+    const progressBar = document.getElementById("progress-bar");
+    const progressPercentage = document.getElementById("progress-percentage");
+    const streakCounter = document.getElementById("streak-counter");
 
-.app-container {
-    width: 90%;
-    max-width: 600px;
-    text-align: center;
-    background-color: #333333;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-}
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    let tasks = [];
+    let streak = 0;
+    let currentDate = new Date();
 
-.header {
-    margin-bottom: 20px;
-}
+    // Fetch tasks from JSON
+    const loadTasksFromJSON = async () => {
+        try {
+            const response = await fetch("tasks.json");
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            console.log("Fetched Tasks JSON:", data); // Debugging
+            tasks = data;
+            loadTasksForDate(currentDate);
+        } catch (error) {
+            console.error("Error loading tasks:", error);
+        }
+    };
 
-.header h1 {
-    margin: 0;
-    font-size: 28px;
-    color: #38efd7;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
+    // Sort tasks by priority
+    const sortTasksByPriority = (tasks) => {
+        console.log("Tasks Before Sorting:", tasks); // Debugging
+        const sortedTasks = tasks.sort((a, b) => a.priority - b.priority);
+        console.log("Tasks After Sorting:", sortedTasks); // Debugging
+        return sortedTasks;
+    };
 
-#date-display {
-    font-size: 14px;
-    color: #38efd7;
-}
+    // Get tasks for a specific date
+    const getTasksForDate = (date) => {
+        const currentDay = daysOfWeek[date.getDay()];
+        console.log("Current Day:", currentDay); // Debugging
 
-#task-list-container {
-    margin-bottom: 20px;
-}
+        const dailyTasks = tasks.tasks.daily || [];
+        console.log("Daily Tasks:", dailyTasks); // Debugging
 
-#task-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
+        const weekdayTasks = tasks.tasks.weekdays.find((group) =>
+            group.days.includes(currentDay)
+        )?.tasks || [];
+        console.log("Weekday Tasks:", weekdayTasks); // Debugging
 
-#task-list li {
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #31d1bc;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    color: #333333;
-}
+        const weekendTasks = tasks.tasks.weekend.find((group) =>
+            group.days.includes(currentDay)
+        )?.tasks || [];
+        console.log("Weekend Tasks:", weekendTasks); // Debugging
 
-#task-list li:hover {
-    background-color: #38efd7;
-    color: #333333;
-}
+        const specificTasks = tasks.tasks.specific?.reduce((acc, group) => {
+            if (group.days.includes(currentDay)) {
+                acc.push(...group.tasks);
+            }
+            return acc;
+        }, []) || [];
+        console.log("Specific Tasks:", specificTasks); // Debugging
 
-progress {
-    width: 100%;
-    height: 20px;
-    border-radius: 10px;
-    appearance: none;
-    -webkit-appearance: none;
-}
+        // Combine and sort tasks
+        const allTasks = [...dailyTasks, ...weekdayTasks, ...weekendTasks, ...specificTasks];
+        console.log("All Combined Tasks (Unsorted):", allTasks); // Debugging
 
-progress::-webkit-progress-bar {
-    background-color: #39fde3;
-    border-radius: 10px;
-}
+        return sortTasksByPriority(allTasks);
+    };
 
-progress::-webkit-progress-value {
-    background-color: #008b78;
-    border-radius: 10px;
-}
+    // Display tasks
+    const displayTasks = (tasks) => {
+        console.log("Tasks to Display:", tasks); // Debugging
+        taskList.innerHTML = ""; // Clear existing tasks
 
-#progress-percentage {
-    margin-top: 5px;
-    font-size: 14px;
-    color: #38efd7;
-}
+        tasks.forEach((taskObj, index) => {
+            const { task } = taskObj; // Extract task name
+            const listItem = document.createElement("li");
 
-.streak-container {
-    margin-bottom: 20px;
-    font-size: 16px;
-    color: #38efd7;
-}
+            // Create a checkbox
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `task-${index}`;
+            checkbox.addEventListener("change", () => toggleTask(checkbox, listItem));
 
-.button-container button {
-    background-color: #31d1bc;
-    color: #38efd7;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin: 5px;
-    transition: background-color 0.3s, color 0.3s;
-}
+            // Create a label for the task
+            const label = document.createElement("label");
+            label.htmlFor = `task-${index}`;
+            label.textContent = task;
 
-.button-container button:hover {
-    background-color: #39fde3;
-    color: #38efd7;
-}
+            // Append checkbox and label to the list item
+            listItem.appendChild(checkbox);
+            listItem.appendChild(label);
 
-footer {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #38efd7;
-}
+            taskList.appendChild(listItem);
+        });
+
+        updateProgress();
+    };
+
+    // Update progress bar
+    const updateProgress = () => {
+        const totalTasks = taskList.children.length;
+        const completedTasks = document.querySelectorAll(".completed").length;
+        const percentage = Math.round((completedTasks / totalTasks) * 100);
+        progressBar.value = percentage;
+        progressPercentage.textContent = `${percentage}% Completed`;
+
+        // Update streak if all tasks are completed
+        if (completedTasks === totalTasks && totalTasks > 0) {
+            streak++;
+            streakCounter.textContent = streak;
+            notifyCompletion();
+        }
+    };
+
+    // Notify task completion
+    const notifyCompletion = () => {
+        const email = "cac5102008@gmail.com";
+        const subject = encodeURIComponent("Daily Tasks Completed");
+        const body = encodeURIComponent(
+            `Congratulations! All tasks for ${currentDate.toDateString()} have been completed.`
+        );
+        const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+
+        // Automatically open email client
+        window.location.href = mailtoLink;
+    };
+
+    // Toggle task completion
+    const toggleTask = (checkbox, listItem) => {
+        if (checkbox.checked) {
+            listItem.classList.add("completed");
+        } else {
+            listItem.classList.remove("completed");
+        }
+        updateProgress();
+    };
+
+    // Load tasks for a specific date
+    const loadTasksForDate = (date) => {
+        dateDisplay.textContent = date.toDateString();
+        const todayTasks = getTasksForDate(date);
+        displayTasks(todayTasks);
+    };
+
+    // Load tasks on page load
+    loadTasksFromJSON();
+});
