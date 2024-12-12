@@ -22,12 +22,12 @@ body {
 
 .header h1 {
     margin: 0;
-    font-size: 28px;
+    font-size: 36px;
     color: #38efd7;
 }
 
 #date-display {
-    font-size: 14px;
+    font-size: 18px;
     color: #38efd7;
 }
 
@@ -39,7 +39,7 @@ body {
 
 #task-list li {
     padding: 15px;
-    margin: 10px 40px; /* Add space on each side */
+    margin: 10px 40px; /* Adjust space on each side */
     background-color: #31d1bc;
     border-radius: 5px;
     display: flex;
@@ -69,8 +69,8 @@ progress {
     border-radius: 10px;
     appearance: none;
     -webkit-appearance: none;
-    margin-top: 20px; /* Move progress bar to the top */
-    margin-bottom: 0; /* Remove bottom margin */
+    margin-top: 20px; /* Place progress bar above tasks */
+    margin-bottom: 20px; /* Add spacing below progress bar */
 }
 
 progress::-webkit-progress-bar {
