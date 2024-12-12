@@ -5,10 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const progressPercentage = document.getElementById("progress-percentage");
     const streakCounter = document.getElementById("streak-counter");
 
-    const prevDayButton = document.getElementById("prev-day");
-    const nextDayButton = document.getElementById("next-day");
-    const resetTasksButton = document.getElementById("reset-tasks");
-
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     let tasks = [];
     let streak = 0;
@@ -144,33 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const todayTasks = getTasksForDate(date);
         displayTasks(todayTasks);
     };
-
-    // Navigate to previous day
-    const goToPreviousDay = () => {
-        currentDate.setDate(currentDate.getDate() - 1);
-        loadTasksForDate(currentDate);
-    };
-
-    // Navigate to next day
-    const goToNextDay = () => {
-        currentDate.setDate(currentDate.getDate() + 1);
-        loadTasksForDate(currentDate);
-    };
-
-    // Reset tasks for the current day
-    const resetTasks = () => {
-        const checkboxes = document.querySelectorAll("#task-list input[type='checkbox']");
-        checkboxes.forEach((checkbox) => {
-            checkbox.checked = false;
-            checkbox.parentElement.classList.remove("completed");
-        });
-        updateProgress();
-    };
-
-    // Attach event listeners to buttons
-    prevDayButton.addEventListener("click", goToPreviousDay);
-    nextDayButton.addEventListener("click", goToNextDay);
-    resetTasksButton.addEventListener("click", resetTasks);
 
     // Load tasks on page load
     loadTasksFromJSON();
