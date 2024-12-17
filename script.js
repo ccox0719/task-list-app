@@ -111,7 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Notify task completion
     const notifyCompletion = () => {
         const email = "cac5102008@gmail.com";
         const subject = encodeURIComponent("Daily Tasks Completed");
@@ -119,11 +118,18 @@ document.addEventListener("DOMContentLoaded", () => {
             `Congratulations! All tasks for ${currentDate.toDateString()} have been completed.`
         );
         const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
-
-        // Automatically open email client
-        window.location.href = mailtoLink;
+    
+        console.log("Generated mailto link:", mailtoLink); // Debugging
+    
+        // Dynamically create and trigger an anchor link
+        const link = document.createElement("a");
+        link.href = mailtoLink;
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
-
+    
     // Toggle task completion
     const toggleTask = (checkbox, listItem) => {
         if (checkbox.checked) {
