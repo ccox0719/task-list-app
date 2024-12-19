@@ -25,40 +25,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load progress from JSON
     const loadProgress = async () => {
-        try {
-            const response = await fetch("progress.json");
-            if (!response.ok) throw new Error("Failed to load progress.json");
+    try {
+        const response = await fetch("progress.json");
+        if (!response.ok) throw new Error("Failed to load progress.json");
 
-            const data = await response.json();
+        const data = await response.json();
 
-            // Display streak
-            if (streakCounter) {
-                streakCounter.textContent = data.streak || 0;
-                streak = data.streak || 0;
-            } else {
-                console.error("Element with ID 'streak-counter' not found in the DOM");
-            }
-
-            // Display completed days
-            const completedDaysList = document.getElementById("completed-days");
-            if (completedDaysList) {
-                completedDaysList.innerHTML = "";
-                (data.completedDays || []).forEach(day => {
-                    const listItem = document.createElement("li");
-                    listItem.textContent = day;
-                    completedDaysList.appendChild(listItem);
-                });
-            } else {
-                console.error("Element with ID 'completed-days' not found in the DOM");
-            }
-
-            // Load current awards
-            currentAwards = data.awards || [];
-            console.log("Awards loaded:", currentAwards);
-        } catch (error) {
-            console.error("Error loading progress.json:", error);
+        // Display streak
+        const streakCounter = document.getElementById("streak-counter");
+        if (streakCounter) {
+            streakCounter.textContent = data.streak || 0;
+        } else {
+            console.error("Element with ID 'streak-counter' not found in the DOM");
         }
-    };
+
+        // Display completed days
+        const completedDaysList = document.getElementById("completed-days");
+        if (completedDaysList) {
+            completedDaysList.innerHTML = "";
+            (data.completedDays || []).forEach(day => {
+                const listItem = document.createElement("li");
+                listItem.textContent = day;
+                completedDaysList.appendChild(listItem);
+            });
+        } else {
+            console.error("Element with ID 'completed-days' not found in the DOM");
+        }
+
+        // Display awards
+        const awardsList = document.getElementById("awards-received");
+        if (awardsList) {
+            awardsList.innerHTML = ""; // Clear the list
+            (data.awards || []).forEach(award => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${award.icon} ${award.name}`; // Display icon and name
+                awardsList.appendChild(listItem);
+            });
+        } else {
+            console.error("Element with ID 'awards-received' not found in the DOM");
+        }
+
+        console.log("Completed Days, Streak, and Awards successfully loaded.");
+    } catch (error) {
+        console.error("Error loading progress.json:", error);
+    }
+};
+
 
     // Save progress to JSON
     const saveProgress = async (completedDays) => {
