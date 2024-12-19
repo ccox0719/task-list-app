@@ -37,6 +37,12 @@ body {
     margin: 0;
 }
 
+#completed-days {
+    list-style-type: none; /* Removes bullets */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Removes default margin */
+}
+
 #task-list li {
     padding: 10px;
     margin: 10px 40px; /* Adjust space on each side */

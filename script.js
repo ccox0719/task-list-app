@@ -35,28 +35,43 @@ document.addEventListener("DOMContentLoaded", () => {
             const completedDates = (data.completedDays || []).map(day => new Date(day));
             const today = new Date();
     
+            console.log("Completed Dates:", completedDates); // Debugging
+    
             // Calculate days completed in the last 7 and 30 days
             const daysCompletedLast7Days = completedDates.filter(date => {
                 const diff = (today - date) / (1000 * 60 * 60 * 24); // Difference in days
+                console.log("Date:", date, "Difference:", diff); // Debugging
                 return diff <= 7 && diff >= 0; // Within last 7 days
             }).length;
     
             const daysCompletedLast30Days = completedDates.filter(date => {
                 const diff = (today - date) / (1000 * 60 * 60 * 24); // Difference in days
+                console.log("Date:", date, "Difference:", diff); // Debugging
                 return diff <= 30 && diff >= 0; // Within last 30 days
             }).length;
     
-            // Update the DOM
+            console.log("Days in Last 7 Days:", daysCompletedLast7Days); // Debugging
+            console.log("Days in Last 30 Days:", daysCompletedLast30Days); // Debugging
+    
+            // Update the totals in the DOM
             document.getElementById("completed-7-days").textContent = daysCompletedLast7Days;
             document.getElementById("completed-30-days").textContent = daysCompletedLast30Days;
     
+            // Populate completed days list
+            const completedDaysList = document.getElementById("completed-days");
+            completedDaysList.innerHTML = "";
+            completedDates.forEach(date => {
+                const listItem = document.createElement("li");
+                listItem.textContent = date.toDateString(); // Format date as readable text
+                completedDaysList.appendChild(listItem);
+            });
         } catch (error) {
             console.error("Error loading progress:", error);
             document.getElementById("streak-counter").textContent = "Error";
             document.getElementById("completed-7-days").textContent = "Error";
             document.getElementById("completed-30-days").textContent = "Error";
         }
-    };
+    };    
 
     const updateProgress = () => {
         const totalTasks = taskList.children.length;
