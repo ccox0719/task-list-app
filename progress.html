@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Completion Progress</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div class="app-container">
@@ -12,23 +13,33 @@
             <h1>Task Completion Progress</h1>
         </header>
         <main>
-            <p>Current Streak: <span id="streak-counter"></span> days</p>
+            <p>Current Streak: <span id="streak-counter">0</span> days</p>
             <p>Completed Days:</p>
             <ul id="completed-days"></ul>
         </main>
     </div>
     <script>
         async function loadProgress() {
-            const response = await fetch("progress.json");
-            const data = await response.json();
-            document.getElementById("streak-counter").textContent = data.streak;
-            const completedDaysList = document.getElementById("completed-days");
-            completedDaysList.innerHTML = "";
-            data.completedDays.forEach(day => {
-                const listItem = document.createElement("li");
-                listItem.textContent = day;
-                completedDaysList.appendChild(listItem);
-            });
+            try {
+                const response = await fetch("progress.json");
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch progress.json: ${response.statusText}`);
+                }
+                const data = await response.json();
+                document.getElementById("streak-counter").textContent = data.streak || 0;
+                const completedDaysList = document.getElementById("completed-days");
+                completedDaysList.innerHTML = "";
+                (data.completedDays || []).forEach(day => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = day;
+                    completedDaysList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error("Error loading progress.json:", error);
+                document.getElementById("streak-counter").textContent = "Error";
+                const completedDaysList = document.getElementById("completed-days");
+                completedDaysList.innerHTML = "<li>Error loading completed days</li>";
+            }
         }
         loadProgress();
     </script>

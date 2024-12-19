@@ -38,13 +38,20 @@ document.addEventListener("DOMContentLoaded", () => {
             streak,
             completedDays,
         };
-
-        // Log the data for debugging
-        console.log("Saving progress:", progressData);
-
-        // Save the progress locally (update progress.json manually in Codespaces)
-        alert(`Progress updated! Streak: ${streak}, Completed Days: ${completedDays.join(", ")}`);
+    
+        try {
+            // Save progress to progress.json
+            const fs = require("fs");
+            fs.writeFileSync("progress.json", JSON.stringify(progressData, null, 2), "utf8");
+    
+            console.log("Progress saved:", progressData); // Log for debugging
+            alert(`Progress updated! Streak: ${streak}, Completed Days: ${completedDays.join(", ")}`);
+        } catch (error) {
+            console.error("Error saving progress:", error);
+            alert("Error updating progress. Please try again.");
+        }
     };
+    
 
     const updateProgress = () => {
         const totalTasks = taskList.children.length;
@@ -67,7 +74,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         updateProgress();
     };
-
+    const pushProgressToGitHub = () => {
+        const { exec } = require("child_process");
+    
+        exec("git add progress.json", (err, stdout, stderr) => {
+            if (err) {
+                console.error("Error adding progress.json:", stderr);
+                return;
+            }
+            console.log("Staged progress.json:", stdout);
+    
+            exec(`git commit -m "Update progress.json with streak and completed days"`, (err, stdout, stderr) => {
+                if (err) {
+                    console.error("Error committing progress.json:", stderr);
+                    return;
+                }
+                console.log("Committed progress.json:", stdout);
+    
+                exec("git push origin main", (err, stdout, stderr) => {
+                    if (err) {
+                        console.error("Error pushing progress.json:", stderr);
+                        return;
+                    }
+                    console.log("Pushed progress.json to GitHub:", stdout);
+                });
+            });
+        });
+    };
+    
     const loadTasksForDate = (date) => {
         dateDisplay.textContent = date.toDateString();
         const currentDay = daysOfWeek[date.getDay()];
