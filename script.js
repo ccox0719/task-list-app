@@ -78,23 +78,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Save progress to JSON
     const saveProgress = async (completedDays) => {
-        try {
-            const response = await fetch("progress.json");
-            const data = await response.json();
+    try {
+        // Fetch current data
+        const response = await fetch("progress.json");
+        const data = await response.json();
 
-            // Update streak and completed days
-            data.streak = streak;
-            data.completedDays = [...new Set([...data.completedDays, ...completedDays])];
-            data.awards = currentAwards;
+        // Update streak and completed days
+        data.streak = streak;
+        data.completedDays = [...new Set([...data.completedDays, ...completedDays])];
 
-            const fs = require("fs");
-            fs.writeFileSync("progress.json", JSON.stringify(data, null, 2), "utf8");
+        // Write updated data back to progress.json
+        const fs = require("fs");
+        fs.writeFileSync("progress.json", JSON.stringify(data, null, 2), "utf8");
 
-            console.log("Progress saved:", data);
-        } catch (error) {
-            console.error("Error saving progress:", error);
-        }
-    };
+        console.log("Progress saved:", data);
+    } catch (error) {
+        console.error("Error saving progress:", error);
+    }
+};
+
 
     // Update progress bar and check awards
     const updateProgress = () => {
