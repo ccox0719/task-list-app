@@ -7,12 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     let tasks = [];
     let streak = 0;
+    let currentAwards = [];
     let currentDate = new Date();
 
+    // Load tasks from JSON
     const loadTasksFromJSON = async () => {
         try {
             const response = await fetch("tasks.json");
-            if (!response.ok) throw new Error("Failed to load tasks");
+            if (!response.ok) throw new Error("Failed to load tasks.json");
             const data = await response.json();
             tasks = data;
             loadTasksForDate(currentDate);
@@ -21,68 +23,71 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    // Load progress from JSON
     const loadProgress = async () => {
         try {
             const response = await fetch("progress.json");
-            if (!response.ok) throw new Error("Failed to load progress");
+            if (!response.ok) throw new Error("Failed to load progress.json");
+
             const data = await response.json();
-    
-            // Update streak
-            streak = data.streak || 0;
-            document.getElementById("streak-counter").textContent = streak;
-    
-            // Parse completedDays as Date objects
-            const completedDates = (data.completedDays || []).map(day => new Date(day));
-            const today = new Date();
-    
-            // Debugging: Show all completed dates and today
-            console.log("Completed Dates:", completedDates);
-            console.log("Today's Date:", today.toDateString());
-    
-            // Calculate totals for the last 7 and 30 days
-            const daysCompletedLast7Days = completedDates.filter(date => {
-                const diffInMs = today - date; // Difference in milliseconds
-                const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)); // Convert to days
-                console.log("Date:", date.toDateString(), "Difference in days:", diffInDays); // Debugging
-                return diffInDays >= 0 && diffInDays <= 7; // Within last 7 days
-            }).length;
-    
-            const daysCompletedLast30Days = completedDates.filter(date => {
-                const diffInMs = today - date; // Difference in milliseconds
-                const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)); // Convert to days
-                console.log("Date:", date.toDateString(), "Difference in days:", diffInDays); // Debugging
-                return diffInDays >= 0 && diffInDays <= 30; // Within last 30 days
-            }).length;
-    
-            // Debugging: Log the totals
-            console.log("Days Completed in Last 7 Days:", daysCompletedLast7Days);
-            console.log("Days Completed in Last 30 Days:", daysCompletedLast30Days);
-    
-            // Update the DOM with totals
-            document.getElementById("completed-7-days").textContent = daysCompletedLast7Days;
-            document.getElementById("completed-30-days").textContent = daysCompletedLast30Days;
-    
-            // Populate completed days list
+
+            // Display streak
+            if (streakCounter) {
+                streakCounter.textContent = data.streak || 0;
+                streak = data.streak || 0;
+            } else {
+                console.error("Element with ID 'streak-counter' not found in the DOM");
+            }
+
+            // Display completed days
             const completedDaysList = document.getElementById("completed-days");
-            completedDaysList.innerHTML = ""; // Clear list
-            completedDates.forEach(date => {
-                const listItem = document.createElement("li");
-                listItem.textContent = date.toDateString(); // Format as readable date
-                completedDaysList.appendChild(listItem);
-            });
+            if (completedDaysList) {
+                completedDaysList.innerHTML = "";
+                (data.completedDays || []).forEach(day => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = day;
+                    completedDaysList.appendChild(listItem);
+                });
+            } else {
+                console.error("Element with ID 'completed-days' not found in the DOM");
+            }
+
+            // Load current awards
+            currentAwards = data.awards || [];
+            console.log("Awards loaded:", currentAwards);
         } catch (error) {
-            console.error("Error loading progress:", error);
-            document.getElementById("streak-counter").textContent = "Error";
-            document.getElementById("completed-7-days").textContent = "Error";
-            document.getElementById("completed-30-days").textContent = "Error";
+            console.error("Error loading progress.json:", error);
         }
     };
-    
-      
 
+    // Save progress to JSON
+    const saveProgress = async (completedDays) => {
+        try {
+            const response = await fetch("progress.json");
+            const data = await response.json();
+
+            // Update streak and completed days
+            data.streak = streak;
+            data.completedDays = [...new Set([...data.completedDays, ...completedDays])];
+            data.awards = currentAwards;
+
+            const fs = require("fs");
+            fs.writeFileSync("progress.json", JSON.stringify(data, null, 2), "utf8");
+
+            console.log("Progress saved:", data);
+        } catch (error) {
+            console.error("Error saving progress:", error);
+        }
+    };
+
+    // Update progress bar and check awards
     const updateProgress = () => {
         const totalTasks = taskList.children.length;
         const completedTasks = document.querySelectorAll(".completed").length;
+
+        // Update progress bar
+        const progressPercentage = (completedTasks / totalTasks) * 100;
+        progressBar.value = progressPercentage;
 
         if (completedTasks === totalTasks && totalTasks > 0) {
             streak++;
@@ -91,11 +96,66 @@ document.addEventListener("DOMContentLoaded", () => {
             const today = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
             saveProgress([today]);
 
-            // Show a notification
             showCompletionNotification(streak, today);
+            checkForAwards(streak);
         }
     };
 
+    // Check for awards
+    const checkForAwards = (streak) => {
+        const awards = [];
+
+        if (streak > 50 && !currentAwards.includes("50-Day Streak Award")) {
+            awards.push({ name: "50-Day Streak Award", icon: "🏆" });
+            showAwardNotification("Incredible! You've achieved a 50-day streak! 🏆");
+        }
+        if (streak > 30 && !currentAwards.includes("30-Day Streak Award")) {
+            awards.push({ name: "30-Day Streak Award", icon: "🎉" });
+            showAwardNotification("Amazing! You've completed more than 30 days in a row! 🎉");
+        }
+        if (streak > 7 && !currentAwards.includes("7-Day Streak Award")) {
+            awards.push({ name: "7-Day Streak Award", icon: "🏅" });
+            showAwardNotification("Great job! You've completed more than 7 days in a row! 🏅");
+        }
+
+        if (awards.length > 0) {
+            currentAwards = [...currentAwards, ...awards];
+            saveProgress([]);
+        }
+    };
+
+    // Show award notification
+    const showAwardNotification = (message) => {
+        const modal = document.createElement("div");
+        modal.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            z-index: 1000;
+        `;
+
+        modal.innerHTML = `
+            <h2>🎉 Congratulations! 🎉</h2>
+            <p>${message}</p>
+            <button id="close-award-modal" style="padding: 10px 20px; background-color: #38efd7; border: none; border-radius: 5px; cursor: pointer; color: white;">
+                Close
+            </button>
+        `;
+
+        document.body.appendChild(modal);
+
+        document.getElementById("close-award-modal").addEventListener("click", () => {
+            document.body.removeChild(modal);
+        });
+    };
+
+    // Toggle task completion
     const toggleTask = (checkbox, listItem) => {
         if (checkbox.checked) {
             listItem.classList.add("completed");
@@ -105,66 +165,59 @@ document.addEventListener("DOMContentLoaded", () => {
         updateProgress();
     };
 
+    // Show completion notification
     const showCompletionNotification = (streak, completedDay) => {
-        // Create a modal element
         const modal = document.createElement("div");
-        modal.style.position = "fixed";
-        modal.style.top = "50%";
-        modal.style.left = "50%";
-        modal.style.transform = "translate(-50%, -50%)";
-        modal.style.backgroundColor = "#fff";
-        modal.style.borderRadius = "10px";
-        modal.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
-        modal.style.padding = "20px";
-        modal.style.textAlign = "center";
-        modal.style.zIndex = "1000";
+        modal.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            z-index: 1000;
+        `;
 
-        // Add content to the modal
         modal.innerHTML = `
             <h2>Congratulations!</h2>
             <p>All tasks for ${completedDay} have been completed.</p>
             <p>Your current streak: <strong>${streak} days</strong></p>
-            <button id="close-modal" style="margin-top: 10px; padding: 10px 20px; font-size: 16px; background-color: #38efd7; border: none; border-radius: 5px; cursor: pointer; color: #fff;">
+            <button id="close-modal" style="padding: 10px 20px; background-color: #38efd7; border: none; border-radius: 5px; cursor: pointer; color: white;">
                 Close
             </button>
         `;
 
-        // Append the modal to the body
         document.body.appendChild(modal);
 
-        // Add functionality to close the modal
         document.getElementById("close-modal").addEventListener("click", () => {
             document.body.removeChild(modal);
         });
     };
 
+    // Load tasks for the current date
     const loadTasksForDate = (date) => {
         dateDisplay.textContent = date.toDateString();
-        const currentDay = daysOfWeek[date.getDay()];
-    
-        // Fetch tasks for the current day
         const todayTasks = tasks.tasks.daily || [];
         taskList.innerHTML = ""; // Clear the task list
-    
+
         todayTasks.forEach((taskObj, index) => {
             const listItem = document.createElement("li");
-    
-            // Extract the task name (ensure 'task' property exists in your JSON)
             const taskName = taskObj.task || "Unnamed Task";
-    
-            // Create a checkbox
+
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.addEventListener("change", () => toggleTask(checkbox, listItem));
-    
-            // Append the checkbox and task name
+
             listItem.textContent = taskName;
             listItem.prepend(checkbox);
             taskList.appendChild(listItem);
         });
     };
-    
 
+    // Initialize
     loadProgress();
     loadTasksFromJSON();
 });

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Completion Progress</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div class="app-container">
@@ -14,35 +13,39 @@
         </header>
         <main>
             <p>Current Streak: <span id="streak-counter"></span> days</p>
-            <p>Days Completed in Last 7 Days: <span id="completed-7-days">0</span></p>
-            <p>Days Completed in Last 30 Days: <span id="completed-30-days">0</span></p>
             <p>Completed Days:</p>
             <ul id="completed-days"></ul>
+            <p>Awards Achieved:</p>
+            <ul id="awards-list"></ul>
         </main>
     </div>
     <script>
         async function loadProgress() {
-            try {
-                const response = await fetch("progress.json");
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch progress.json: ${response.statusText}`);
-                }
-                const data = await response.json();
-                document.getElementById("streak-counter").textContent = data.streak || 0;
-                const completedDaysList = document.getElementById("completed-days");
-                completedDaysList.innerHTML = "";
-                (data.completedDays || []).forEach(day => {
-                    const listItem = document.createElement("li");
-                    listItem.textContent = day;
-                    completedDaysList.appendChild(listItem);
-                });
-            } catch (error) {
-                console.error("Error loading progress.json:", error);
-                document.getElementById("streak-counter").textContent = "Error";
-                const completedDaysList = document.getElementById("completed-days");
-                completedDaysList.innerHTML = "<li>Error loading completed days</li>";
-            }
+            const response = await fetch("progress.json");
+            const data = await response.json();
+
+            // Display streak
+            document.getElementById("streak-counter").textContent = data.streak;
+
+            // Display completed days
+            const completedDaysList = document.getElementById("completed-days");
+            completedDaysList.innerHTML = "";
+            (data.completedDays || []).forEach(day => {
+                const listItem = document.createElement("li");
+                listItem.textContent = day;
+                completedDaysList.appendChild(listItem);
+            });
+
+            // Display awards
+            const awardsList = document.getElementById("awards-list");
+            awardsList.innerHTML = "";
+            (data.awards || []).forEach(award => {
+                const listItem = document.createElement("li");
+                listItem.textContent = award;
+                awardsList.appendChild(listItem);
+            });
         }
+
         loadProgress();
     </script>
 </body>
