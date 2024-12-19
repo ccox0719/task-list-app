@@ -1,8 +1,5 @@
 {
-  "streak": 35,
-  "completedDays": ["2024-12-18", "2024-12-19", "2024-12-20"],
-  "awards": [
-    { "name": "7-Day Streak Award", "icon": "🏅" },
-    { "name": "30-Day Streak Award", "icon": "🎉" }
-  ]
+    "streak": 0,
+    "completedDays": [],
+    "awards": []
 }
