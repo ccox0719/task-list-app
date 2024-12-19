@@ -1,5 +1,8 @@
 {
     "streak": 0,
     "completedDays": [],
-    "awards": []
+    "awards": [
+        { "name": "7-Day Streak Award", "icon": "🏅" },
+        { "name": "30-Day Streak Award", "icon": "🎉" }
+    ]
 }
