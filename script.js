@@ -35,25 +35,28 @@ document.addEventListener("DOMContentLoaded", () => {
             const completedDates = (data.completedDays || []).map(day => new Date(day));
             const today = new Date();
     
-            console.log("Completed Dates:", completedDates); // Debugging
+            // Debugging: Show all completed dates and today
+            console.log("Completed Dates:", completedDates);
+            console.log("Today's Date:", today.toDateString());
     
             // Calculate totals for the last 7 and 30 days
             const daysCompletedLast7Days = completedDates.filter(date => {
                 const diffInMs = today - date; // Difference in milliseconds
-                const diffInDays = diffInMs / (1000 * 60 * 60 * 24); // Convert to days
+                const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)); // Convert to days
                 console.log("Date:", date.toDateString(), "Difference in days:", diffInDays); // Debugging
                 return diffInDays >= 0 && diffInDays <= 7; // Within last 7 days
             }).length;
     
             const daysCompletedLast30Days = completedDates.filter(date => {
                 const diffInMs = today - date; // Difference in milliseconds
-                const diffInDays = diffInMs / (1000 * 60 * 60 * 24); // Convert to days
+                const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)); // Convert to days
                 console.log("Date:", date.toDateString(), "Difference in days:", diffInDays); // Debugging
                 return diffInDays >= 0 && diffInDays <= 30; // Within last 30 days
             }).length;
     
-            console.log("Days Completed in Last 7 Days:", daysCompletedLast7Days); // Debugging
-            console.log("Days Completed in Last 30 Days:", daysCompletedLast30Days); // Debugging
+            // Debugging: Log the totals
+            console.log("Days Completed in Last 7 Days:", daysCompletedLast7Days);
+            console.log("Days Completed in Last 30 Days:", daysCompletedLast30Days);
     
             // Update the DOM with totals
             document.getElementById("completed-7-days").textContent = daysCompletedLast7Days;
@@ -74,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("completed-30-days").textContent = "Error";
         }
     };
+    
       
 
     const updateProgress = () => {
