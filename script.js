@@ -31,38 +31,40 @@ document.addEventListener("DOMContentLoaded", () => {
             streak = data.streak || 0;
             document.getElementById("streak-counter").textContent = streak;
     
-            // Parse completedDays and calculate date ranges
+            // Parse completedDays as Date objects
             const completedDates = (data.completedDays || []).map(day => new Date(day));
             const today = new Date();
     
             console.log("Completed Dates:", completedDates); // Debugging
     
-            // Calculate days completed in the last 7 and 30 days
+            // Calculate totals for the last 7 and 30 days
             const daysCompletedLast7Days = completedDates.filter(date => {
-                const diff = (today - date) / (1000 * 60 * 60 * 24); // Difference in days
-                console.log("Date:", date, "Difference:", diff); // Debugging
-                return diff <= 7 && diff >= 0; // Within last 7 days
+                const diffInMs = today - date; // Difference in milliseconds
+                const diffInDays = diffInMs / (1000 * 60 * 60 * 24); // Convert to days
+                console.log("Date:", date.toDateString(), "Difference in days:", diffInDays); // Debugging
+                return diffInDays >= 0 && diffInDays <= 7; // Within last 7 days
             }).length;
     
             const daysCompletedLast30Days = completedDates.filter(date => {
-                const diff = (today - date) / (1000 * 60 * 60 * 24); // Difference in days
-                console.log("Date:", date, "Difference:", diff); // Debugging
-                return diff <= 30 && diff >= 0; // Within last 30 days
+                const diffInMs = today - date; // Difference in milliseconds
+                const diffInDays = diffInMs / (1000 * 60 * 60 * 24); // Convert to days
+                console.log("Date:", date.toDateString(), "Difference in days:", diffInDays); // Debugging
+                return diffInDays >= 0 && diffInDays <= 30; // Within last 30 days
             }).length;
     
-            console.log("Days in Last 7 Days:", daysCompletedLast7Days); // Debugging
-            console.log("Days in Last 30 Days:", daysCompletedLast30Days); // Debugging
+            console.log("Days Completed in Last 7 Days:", daysCompletedLast7Days); // Debugging
+            console.log("Days Completed in Last 30 Days:", daysCompletedLast30Days); // Debugging
     
-            // Update the totals in the DOM
+            // Update the DOM with totals
             document.getElementById("completed-7-days").textContent = daysCompletedLast7Days;
             document.getElementById("completed-30-days").textContent = daysCompletedLast30Days;
     
             // Populate completed days list
             const completedDaysList = document.getElementById("completed-days");
-            completedDaysList.innerHTML = "";
+            completedDaysList.innerHTML = ""; // Clear list
             completedDates.forEach(date => {
                 const listItem = document.createElement("li");
-                listItem.textContent = date.toDateString(); // Format date as readable text
+                listItem.textContent = date.toDateString(); // Format as readable date
                 completedDaysList.appendChild(listItem);
             });
         } catch (error) {
@@ -71,7 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("completed-7-days").textContent = "Error";
             document.getElementById("completed-30-days").textContent = "Error";
         }
-    };    
+    };
+      
 
     const updateProgress = () => {
         const totalTasks = taskList.children.length;
