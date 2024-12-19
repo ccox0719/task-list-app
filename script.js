@@ -27,27 +27,28 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!response.ok) throw new Error("Failed to load progress");
             const data = await response.json();
     
+            // Update streak
             streak = data.streak || 0;
             document.getElementById("streak-counter").textContent = streak;
     
-            // Get completed days as Date objects
+            // Parse completedDays and calculate date ranges
             const completedDates = (data.completedDays || []).map(day => new Date(day));
             const today = new Date();
     
-            // Calculate totals for the last 7 and 30 days
-            const total7Days = completedDates.filter(date => {
+            // Calculate days completed in the last 7 and 30 days
+            const daysCompletedLast7Days = completedDates.filter(date => {
                 const diff = (today - date) / (1000 * 60 * 60 * 24); // Difference in days
-                return diff <= 7 && diff >= 0;
+                return diff <= 7 && diff >= 0; // Within last 7 days
             }).length;
     
-            const total30Days = completedDates.filter(date => {
+            const daysCompletedLast30Days = completedDates.filter(date => {
                 const diff = (today - date) / (1000 * 60 * 60 * 24); // Difference in days
-                return diff <= 30 && diff >= 0;
+                return diff <= 30 && diff >= 0; // Within last 30 days
             }).length;
     
-            // Update the totals in the DOM
-            document.getElementById("completed-7-days").textContent = total7Days;
-            document.getElementById("completed-30-days").textContent = total30Days;
+            // Update the DOM
+            document.getElementById("completed-7-days").textContent = daysCompletedLast7Days;
+            document.getElementById("completed-30-days").textContent = daysCompletedLast30Days;
     
         } catch (error) {
             console.error("Error loading progress:", error);
@@ -56,9 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("completed-30-days").textContent = "Error";
         }
     };
-    
-    
-    
 
     const updateProgress = () => {
         const totalTasks = taskList.children.length;
