@@ -33,19 +33,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const saveProgress = async (completedDays) => {
+        const today = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
         const progressData = {
             streak,
             completedDays,
         };
-        try {
-            await fetch("progress.json", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(progressData),
-            });
-        } catch (error) {
-            console.error("Error saving progress:", error);
-        }
+
+        // Log the data for debugging
+        console.log("Saving progress:", progressData);
+
+        // Save the progress locally (update progress.json manually in Codespaces)
+        alert(`Progress updated! Streak: ${streak}, Completed Days: ${completedDays.join(", ")}`);
     };
 
     const updateProgress = () => {
@@ -73,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadTasksForDate = (date) => {
         dateDisplay.textContent = date.toDateString();
         const currentDay = daysOfWeek[date.getDay()];
-        const todayTasks = tasks.tasks[currentDay.toLowerCase()] || [];
+        const todayTasks = tasks.tasks.daily || [];
         taskList.innerHTML = "";
         todayTasks.forEach((task, index) => {
             const listItem = document.createElement("li");
