@@ -26,30 +26,37 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch("progress.json");
             if (!response.ok) throw new Error("Failed to load progress");
             const data = await response.json();
-            streak = data.streak;
+    
+            streak = data.streak || 0;
+            document.getElementById("streak-counter").textContent = streak;
+    
+            // Get completed days as Date objects
+            const completedDates = (data.completedDays || []).map(day => new Date(day));
+            const today = new Date();
+    
+            // Calculate totals for the last 7 and 30 days
+            const total7Days = completedDates.filter(date => {
+                const diff = (today - date) / (1000 * 60 * 60 * 24); // Difference in days
+                return diff <= 7 && diff >= 0;
+            }).length;
+    
+            const total30Days = completedDates.filter(date => {
+                const diff = (today - date) / (1000 * 60 * 60 * 24); // Difference in days
+                return diff <= 30 && diff >= 0;
+            }).length;
+    
+            // Update the totals in the DOM
+            document.getElementById("completed-7-days").textContent = total7Days;
+            document.getElementById("completed-30-days").textContent = total30Days;
+    
         } catch (error) {
             console.error("Error loading progress:", error);
+            document.getElementById("streak-counter").textContent = "Error";
+            document.getElementById("completed-7-days").textContent = "Error";
+            document.getElementById("completed-30-days").textContent = "Error";
         }
     };
-
-    const saveProgress = async (completedDays) => {
-        const fs = require("fs");
-        const today = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-        const progressData = {
-            streak,
-            completedDays,
-        };
     
-        try {
-            console.log("Attempting to save progress:", progressData); // Debugging log
-            fs.writeFileSync("progress.json", JSON.stringify(progressData, null, 2), "utf8");
-            console.log("Progress saved successfully!"); // Success log
-            alert(`Progress updated! Streak: ${streak}, Completed Days: ${completedDays.join(", ")}`);
-        } catch (error) {
-            console.error("Error saving progress:", error); // Error log
-            alert("Error updating progress. Please try again.");
-        }
-    };
     
     
 
