@@ -33,21 +33,25 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const saveProgress = async (completedDays) => {
+        const fs = require("fs");
+        const today = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
         const progressData = {
             streak,
             completedDays,
         };
-
+    
         try {
-            await fetch("progress.json", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(progressData),
-            });
+            console.log("Attempting to save progress:", progressData); // Debugging log
+            fs.writeFileSync("progress.json", JSON.stringify(progressData, null, 2), "utf8");
+            console.log("Progress saved successfully!"); // Success log
+            alert(`Progress updated! Streak: ${streak}, Completed Days: ${completedDays.join(", ")}`);
         } catch (error) {
-            console.error("Error saving progress:", error);
+            console.error("Error saving progress:", error); // Error log
+            alert("Error updating progress. Please try again.");
         }
     };
+    
+    
 
     const updateProgress = () => {
         const totalTasks = taskList.children.length;
