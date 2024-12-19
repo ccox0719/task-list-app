@@ -24,12 +24,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Load progress from JSON
-    const loadProgress = async () => {
+   const loadProgress = async () => {
     try {
         const response = await fetch("progress.json");
         if (!response.ok) throw new Error("Failed to load progress.json");
 
         const data = await response.json();
+        console.log("Progress Data Loaded:", data);
 
         // Display streak
         const streakCounter = document.getElementById("streak-counter");
@@ -54,9 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Display awards
         const awardsList = document.getElementById("awards-received");
+        console.log("Awards List Element:", awardsList);
         if (awardsList) {
             awardsList.innerHTML = ""; // Clear the list
             (data.awards || []).forEach(award => {
+                console.log("Rendering Award:", award); // Log each award
                 const listItem = document.createElement("li");
                 listItem.textContent = `${award.icon} ${award.name}`; // Display icon and name
                 awardsList.appendChild(listItem);
@@ -65,11 +68,12 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Element with ID 'awards-received' not found in the DOM");
         }
 
-        console.log("Completed Days, Streak, and Awards successfully loaded.");
+        console.log("Awards successfully loaded.");
     } catch (error) {
         console.error("Error loading progress.json:", error);
     }
 };
+
 
 
     // Save progress to JSON
